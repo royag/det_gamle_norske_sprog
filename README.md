@@ -1,5 +1,7 @@
-# det_gamle_norske_sprog
-Ordbog over Det gamle norske Sprog (Fritzner 1896)
+
+# Ordbog over Det gamle norske Sprog
+
+(Johan Fritzner, 2.utg. (1883-1896))
 
 Basert på (Public Domain):
 - Ordbog over det gamle norske Sprog. 1 : A-Hjørping: https://www.nb.no/items/b1d1ac9e820c0490b710c8236c413cc8
@@ -10,7 +12,7 @@ Lastet ned som PDF, og splittet i JPG-bilder v.h.a. Poppler pdfimages (https://p
 
 ```pdfimages.exe -png -j Fritzner_1896_1954_Bind_1_A-Hj.pdf bind1``` ... etc * 3
 
-Så OCR-tolket v.h.a. Tesseract, en gang med lang="dan_frak" og en anne gang med lang="isl"
+Så OCR-tolket v.h.a. Tesseract (https://github.com/tesseract-ocr/tesseract), en gang med lang="dan_frak" og en annen gang med lang="isl"
 
 Så er håpet å klare å strukturere og sammenstille disse for å lage en brukbar søkbar ordbok, som igjen kan konverteres til f.eks. en ordbok for Kindle.
 
