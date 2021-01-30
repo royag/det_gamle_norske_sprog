@@ -12,7 +12,7 @@ Lastet ned som PDF, og splittet i JPG-bilder v.h.a. Poppler pdfimages (https://p
 
 Så OCR-tolket v.h.a. Tesseract, en gang med lang="dan_frak" og en anne gang med lang="isl"
 
-Så er håpet å klare å strukturere og sammenstille disse for å lage en brukbar søkbar ordbok for Kindle...
+Så er håpet å klare å strukturere og sammenstille disse for å lage en brukbar søkbar ordbok, som igjen kan konverteres til f.eks. en ordbok for Kindle.
 
 
 
