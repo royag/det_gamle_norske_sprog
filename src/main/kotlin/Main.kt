@@ -1,3 +1,4 @@
+import no.royag.fritznerordbok.isWordRangeLineISL
 import java.io.File
 
 val bind1Start = 28
@@ -31,19 +32,31 @@ val pageSplit = "|"
 
 // NB:   1:33(isl/dan) :  | aðalmerki  (halvdel 2 første linje slått over i halvdel 1)
 // NB:   1:70 (isl) masse forskyvninger... + linje 31 splitt med "!" ++
+
 fun main() {
+    dosome1()
+}
+
+fun dosome1() {
     //val page = Page.load(bookNo = 1, pageNo = 33)
     //page.printSideBySide() //maxLines = 10)  — - - —-
     for (pno in bind1Start until 100) {
         val p = Page.load(bookNo = 1, pageNo = pno)
         println("PAGE $pno")
+        var foundWordRangeCount = 0
         p.ocrIsl.forEach {
-            if (it.contains(pageSplit)
+            if (it.isWordRangeLineISL()) {
+                println(it)
+                foundWordRangeCount++
+            }
+            /*if (it.contains(pageSplit)
                 && !it.trim().endsWith(pageSplit)
                 && !it.trim().startsWith(pageSplit)) {
 
                 println(it)
-            }
+            }*/
         }
+        if (foundWordRangeCount == 0) println("NOT FOUND")
+        else if (foundWordRangeCount > 1) println("FOUND MANY $foundWordRangeCount")//throw RuntimeException("FOUND MANY $foundWordRangeCount")
     }
 }
