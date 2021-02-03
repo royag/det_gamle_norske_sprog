@@ -45,7 +45,7 @@ class Page(val ocrDan: List<String>, val ocrIsl: List<String>) {
     fun couldContain(norseWord: String) : Boolean =
         norseWord.norseToSortable().let { word ->
             wordRange().let { range ->
-                word >= range.first && word <= range.second
+                word >= range.first.norseToSortable() && word <= range.second.norseToSortable()
             }
         }
 
