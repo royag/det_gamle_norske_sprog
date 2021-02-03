@@ -7,6 +7,8 @@ val NORSE_SINGLE_OR_DOUBLE_WORD = """$NORSE_LETTER+ ?$NORSE_LETTER*"""
 
 private val DOLLAR = "$"
 
+val WORD_RANGE_DELIMITER = "—"
+
 object ISL {
     val wordRangeLinePageNumberRight = Regex("""^$NORSE_SINGLE_OR_DOUBLE_WORD *— *$NORSE_SINGLE_OR_DOUBLE_WORD *\d+$DOLLAR""")
     val wordRangeLinePageNumberLeft = Regex("""^\d+ *$NORSE_SINGLE_OR_DOUBLE_WORD *— *$NORSE_SINGLE_OR_DOUBLE_WORD *$DOLLAR""")
