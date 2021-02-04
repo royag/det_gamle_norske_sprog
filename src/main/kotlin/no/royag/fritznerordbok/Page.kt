@@ -18,7 +18,7 @@ class Page(val ocrDan: List<String>, val ocrIsl: List<String>) {
     fun wordRange() : Pair<String, String> {
         val rangeLines = ocrIsl.filter { it.isWordRangeLineISL() }
         if (rangeLines.size != 1) throw RuntimeException("Klarte ikke velge wordRangeLine: $rangeLines")
-        return rangeLines.first().split(WORD_RANGE_DELIMITER).map { it.trim() }.let {
+        return rangeLines.first().split(Regex(WORD_RANGE_DELIMITER)).map { it.trim() }.let {
             require(it.size == 2)
             it.first() to it.last()
         }
