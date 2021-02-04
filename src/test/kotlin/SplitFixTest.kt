@@ -1,3 +1,4 @@
+import junit.framework.Assert.assertEquals
 import no.royag.fritznerordbok.isWordRangeLineISL
 import org.junit.Test
 
@@ -33,6 +34,24 @@ val NORSE_LETTER = """[[a-z][A-Z][æøöåÆØÖÅ]$NORSE_ONLY]"""
         println(a.sorted())
     }
 
+    fun Page.wordEntryOf(line: String) : String? {
+        line.trim().split(" ").firstOrNull().let { firstWordWithComma ->
+            if (firstWordWithComma != null && firstWordWithComma.endsWith(",")) {
+                val plainWord = firstWordWithComma.removeSuffix(",")
+                if (this.couldContain(plainWord)) return plainWord
+            }
+        }
+        return null
+    }
+
+    @Test
+    fun testWordEntryOf() {
+        // TODO: áhyggjusamliga,adr. meb alvorsfulbt Einb.
+        val p = Page.load(bookNo = 1, pageNo = 49)
+        val s = "áifóðr, n. Qvilefober. Stj. 214."
+        assertEquals("áifóðr", p.wordEntryOf(s))
+    }
+
     @Test
     fun test1() {
         val linesPerColumn = 61
@@ -47,6 +66,27 @@ val NORSE_LETTER = """[[a-z][A-Z][æøöåÆØÖÅ]$NORSE_ONLY]"""
             l = l.drop(1) // linenumber
         }
         // so... should be 122 ?   (=61 * 2)
+
+        /*
+        l.mapNotNull { p.wordEntryOf(it) }.forEach { word ->
+            println(word)
+        }*/
+
+
+        var last = ""
+        l.forEach {
+            if ((p.wordEntryOf(it) != null)
+                || (last.length < 25) ) {
+                println("----------BLOCK-START-------------")
+            }
+            println(it)
+            last = it
+        }
+
+        if (true) return
+
+
+
         l.print()
         // UGH: 062 áhöfn, f. ->eg. start på 065
         // and try fix:
