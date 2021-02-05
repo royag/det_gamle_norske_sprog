@@ -65,9 +65,12 @@ val NORSE_LETTER = """[[a-z][A-Z][æøöåÆØÖÅ]$NORSE_ONLY]"""
         this.filter { Regex(rubbishSymbol).containsMatchIn("$it") }.length
 
     val predefinedRubbish = listOf(
+        "${(12.toByte()).toChar()}",
+        //'\f',
         "sov-» ·s·s sessss", // dan
         "#08", // isl39
         "s-« s-:«--s-skt»-Os", // dan 104
+        "———————————.....—.A—A.A.2.2.2.2A.2.AALUÐUÐAÐ8ÐUÐ8ÐUApUAUpUAÁpþ\$W(WVWVWÝ£WA#AW—W—W£W£—AtA—t—t—tTtTLPLPLPLPLPLPLPLPLPLPPPPPP„P„P„——————22—2—————.—.", // isl 70:119
     )
 
     fun String.isWordRangeLineANY() = this.isWordRangeLineISL() || this.isWordRangeLineDAN()
@@ -115,14 +118,19 @@ val NORSE_LETTER = """[[a-z][A-Z][æøöåÆØÖÅ]$NORSE_ONLY]"""
         assertTrue("s-« s-:«--s-skt»-Os".isRubbishLine())
 
         assertFalse("Sd Mart".isWordRangeLineANY())
+
+        assertTrue("-—————————————————————————————".isRubbishLine())
+        assertTrue("———————————.....—.A—A.A.2.2.2.2A.2.AALUÐUÐAÐ8ÐUÐ8ÐUApUAUpUAÁpþ\$W(WVWVWÝ£WA#AW—W—W£W£—AtA—t—t—tTtTLPLPLPLPLPLPLPLPLPLPPPPPP„P„P„——————22—2—————.—."
+            .isRubbishLine())
     }
 
     fun List<String>.fjernBlanke(): List<String> =
         this.filter {
             //(!it.isWordRangeLineANY())
               //      &&
-                    (!it.isRubbishLine())
-                    && it.trim().length > 0
+                    //(!it.isRubbishLine())
+                    //&&
+                            it.trim().length > 0
         }.let {
             //println(it)
             if (it.isNotEmpty() && it[0].trim().length < 5) {
@@ -156,20 +164,20 @@ val NORSE_LETTER = """[[a-z][A-Z][æøöåÆØÖÅ]$NORSE_ONLY]"""
         if (true) return*/
 
         var first = true
-        for (pn in 84..84) {
+        for (pn in 30..128) {
             val p = Page.load(bookNo = 1, pageNo = pn)
-            val ocrDan = p.ocrDan.utenSmåtingPaaStarten()
-            val ocrIsl = p.ocrIsl.utenSmåtingPaaStarten()
+            val ocrDan = p.ocrDan //.utenSmåtingPaaStarten()
+            val ocrIsl = p.ocrIsl //.utenSmåtingPaaStarten()
             val danRange = ocrDan.filter { it.isWordRangeLineDAN() }
             val islRange = ocrIsl.filter { it.isWordRangeLineISL() }
-            var isl = ocrIsl.fjernBlanke()
-            var dan = ocrDan.fjernBlanke()
+            var isl = ocrIsl //.fjernBlanke()
+            var dan = ocrDan //.fjernBlanke()
             // 113: atdj 11 p —- atferd
             println("--------------------- $pn -----------------------")
             if (isl.size != dan.size) {
                 println("try adjust...page=$pn (${isl.size} vs ${dan.size})")
-                println(danRange)
-                println(islRange)
+                //println(danRange)
+                //println(islRange)
                 val i = isl.toMutableList()
                 val d = dan.toMutableList()
                 val i2 = mutableListOf<String>()
@@ -177,15 +185,23 @@ val NORSE_LETTER = """[[a-z][A-Z][æøöåÆØÖÅ]$NORSE_ONLY]"""
                 while (i.isNotEmpty() && d.isNotEmpty()) {
                     var dw = d.removeAt(0)
                     var iw = i.removeAt(0)
-                    //println("got $dw \t\t\t $iw")
+                    if (dw.isRubbishLine() && iw.isRubbishLine()) {
+                        print("double rubbish ($dw    VS     $iw)")
+                        continue
+                    }
+                    println("TRY: " + dw.padEnd(70) + iw)
+                    var didthrow = false
                     while (dw.length.toDouble() > iw.length.toDouble() * 2.0) {
                         println("throwing ISL \t\t\t\t $iw    (does not match $dw)")
                         iw = i.removeAt(0)
+                        didthrow = true
                     }
                     while (iw.length.toDouble() > dw.length.toDouble() * 2.0) {
                         println("throwing DAN $dw    (does not match $iw)")
                         dw = d.removeAt(0)
+                        didthrow = true
                     }
+                    if (didthrow) println("USE: " + dw.padEnd(70) + iw)
                     i2.add(iw)
                     d2.add(dw)
                     if (i.isEmpty() != d.isEmpty()) {
@@ -194,14 +210,21 @@ val NORSE_LETTER = """[[a-z][A-Z][æøöåÆØÖÅ]$NORSE_ONLY]"""
                         Page(dan, isl).printSideBySide()
                         println("TIL:")
                         Page(d2, i2).printSideBySide()
+                        throw RuntimeException("TIL OVERS")
                     }
                 }
-                println("RES = ${i2.size} vd ${d2.size}")
+                //println("RES = ${i2.size} vd ${d2.size}")
                 isl = i2
                 dan = d2
                 //Page(dan, isl).printSideBySide()
+            } else {
+                println("len = ${isl.size}")
             }
             println(isl.last() + "\t\t" + dan.last())
+            if (isl.last().length == 1) {
+                println(isl.last()[0].toByte())
+                println("${(12.toByte()).toChar()}" == isl.last())
+            }
 
             if (isl.size != dan.size) {
                 println("$pn OH NO!")
